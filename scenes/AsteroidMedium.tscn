@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c3wc85sx746fg"]
+
+[ext_resource type="Script" uid="uid://bixy8ddyis6kb" path="res://scripts/Asteroid.gd" id="1"]
+[ext_resource type="Script" uid="uid://cil8fplxsio71" path="res://scripts/HealthComponent.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://b6ojnyj6kay3g" path="res://assets/asteroids/medium-asteroid.png" id="2_bqdnr"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 20.0
+
+[sub_resource type="CircleShape2D" id="2"]
+radius = 20.0
+
+[node name="AsteroidMedium" type="CharacterBody2D" unique_id=881522118]
+collision_layer = 16
+collision_mask = 7
+script = ExtResource("1")
+move_speed = 70.0
+rotation_speed = 0.3
+resource_drop_count = 4
+size_category = "medium"
+impact_damage = 12
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1247066998]
+texture = ExtResource("2_bqdnr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1891563904]
+shape = SubResource("1")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=742410877]
+script = ExtResource("2")
+max_hp = 7
+
+[node name="HitboxArea2D" type="Area2D" parent="." unique_id=1161862734]
+collision_layer = 16
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea2D" unique_id=1412291542]
+shape = SubResource("2")

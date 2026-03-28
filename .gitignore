@@ -1,0 +1,6 @@
+# Godot-generated import/cache folder — do not commit
+.godot/
+
+# OS junk
+.DS_Store
+Thumbs.db

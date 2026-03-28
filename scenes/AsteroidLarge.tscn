@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://dcy12ygdhtrsc"]
+
+[ext_resource type="Script" uid="uid://bixy8ddyis6kb" path="res://scripts/Asteroid.gd" id="1"]
+[ext_resource type="Script" uid="uid://cil8fplxsio71" path="res://scripts/HealthComponent.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://duthq3kk2s7tl" path="res://assets/asteroids/large-asteroid.png" id="2_fugeo"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 32.0
+
+[sub_resource type="CircleShape2D" id="2"]
+radius = 32.0
+
+[node name="AsteroidLarge" type="CharacterBody2D" unique_id=290001588]
+collision_layer = 16
+collision_mask = 7
+script = ExtResource("1")
+move_speed = 50.0
+rotation_speed = 0.15
+resource_drop_count = 7
+size_category = "large"
+impact_damage = 25
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=149256507]
+texture = ExtResource("2_fugeo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1118981689]
+shape = SubResource("1")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1309101029]
+script = ExtResource("2")
+max_hp = 15
+
+[node name="HitboxArea2D" type="Area2D" parent="." unique_id=1468051448]
+collision_layer = 16
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea2D" unique_id=1856301863]
+shape = SubResource("2")

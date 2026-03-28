@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://duyeca3ktmlrs"]
+
+[ext_resource type="Script" uid="uid://cym6sh710yy0o" path="res://scripts/EnemyShip.gd" id="1"]
+[ext_resource type="Script" uid="uid://cil8fplxsio71" path="res://scripts/HealthComponent.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://cekshhgvnphpg" path="res://assets/enemies/enemy-ship.png" id="2_ynisa"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 24.0
+
+[sub_resource type="CircleShape2D" id="2"]
+radius = 24.0
+
+[node name="EnemyShip" type="CharacterBody2D" unique_id=496487811]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=703735592]
+texture = ExtResource("2_ynisa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2000698977]
+shape = SubResource("1")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=291528793]
+script = ExtResource("2")
+max_hp = 40
+
+[node name="HitboxArea2D" type="Area2D" parent="." unique_id=1384880773]
+collision_layer = 8
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea2D" unique_id=2013836624]
+shape = SubResource("2")
+
+[node name="WeaponMount" type="Marker2D" parent="." unique_id=1004167922]
+position = Vector2(0, 20)
+
+[node name="MissileLauncher" type="Marker2D" parent="." unique_id=239497077]
+position = Vector2(0, 20)
+
+[node name="HPBar" type="ProgressBar" parent="." unique_id=1500118637]
+offset_left = -28.0
+offset_top = -44.0
+offset_right = 28.0
+offset_bottom = -36.0
+max_value = 40.0
+value = 40.0
+show_percentage = false

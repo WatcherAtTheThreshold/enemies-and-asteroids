@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://dght8rbjug3q8"]
+
+[ext_resource type="Script" uid="uid://dkgcinbw18upn" path="res://scripts/Main.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/AsteroidSpawner.tscn" id="2_lhr70"]
+[ext_resource type="PackedScene" path="res://scenes/GameOver.tscn" id="2_nfivy"]
+[ext_resource type="PackedScene" path="res://scenes/UpgradeScreen.tscn" id="3_1nqs0"]
+[ext_resource type="PackedScene" uid="uid://dp1vw8mpk01bd" path="res://scenes/AsteroidSmall.tscn" id="3_wp0k4"]
+[ext_resource type="PackedScene" uid="uid://c3wc85sx746fg" path="res://scenes/AsteroidMedium.tscn" id="4_bjd11"]
+[ext_resource type="PackedScene" uid="uid://dcy12ygdhtrsc" path="res://scenes/AsteroidLarge.tscn" id="5_qmy6f"]
+[ext_resource type="PackedScene" path="res://scenes/ResourceDrop.tscn" id="6_mwfav"]
+[ext_resource type="PackedScene" path="res://scenes/EnemySpawner.tscn" id="7_3p2gp"]
+[ext_resource type="PackedScene" uid="uid://duyeca3ktmlrs" path="res://scenes/EnemyShip.tscn" id="8_cvmbd"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyProjectile.tscn" id="9_ft6cd"]
+[ext_resource type="PackedScene" path="res://scenes/EnemyMissile.tscn" id="10_bb450"]
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="11_mwfav"]
+[ext_resource type="PackedScene" path="res://scenes/PlayerProjectile.tscn" id="12_3p2gp"]
+[ext_resource type="PackedScene" uid="uid://bvy3vj7gj0q65" path="res://scenes/Base.tscn" id="13_cvmbd"]
+[ext_resource type="Texture2D" uid="uid://dicalw37v0a41" path="res://assets/ships/player-ship.png" id="13_ft6cd"]
+[ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="14_ft6cd"]
+[ext_resource type="Texture2D" uid="uid://2su7w1f1t5ar" path="res://assets/backgrounds/ground-strip.png" id="16_cvmbd"]
+[ext_resource type="Texture2D" uid="uid://28hoo5i8x5xi" path="res://assets/backgrounds/background.png" id="17_ft6cd"]
+[ext_resource type="PackedScene" uid="uid://dsryxewlyo4b0" path="res://scenes/HUD.tscn" id="18_bb450"]
+
+[node name="Main" type="Node2D" unique_id=44375873 node_paths=PackedStringArray("asteroid_spawner", "enemy_spawner", "player", "base")]
+script = ExtResource("1")
+asteroid_spawner = NodePath("AsteroidSpawner")
+enemy_spawner = NodePath("EnemySpawner")
+player = NodePath("Player")
+base = NodePath("Base")
+game_over_scene = ExtResource("2_nfivy")
+upgrade_screen_scene = ExtResource("3_1nqs0")
+
+[node name="AsteroidSpawner" parent="." unique_id=622591493 instance=ExtResource("2_lhr70")]
+small_asteroid_scene = ExtResource("3_wp0k4")
+medium_asteroid_scene = ExtResource("4_bjd11")
+large_asteroid_scene = ExtResource("5_qmy6f")
+resource_drop_scene = ExtResource("6_mwfav")
+base_spawn_interval = 1.5
+min_spawn_interval = 0.4
+
+[node name="EnemySpawner" parent="." unique_id=477111736 instance=ExtResource("7_3p2gp")]
+enemy_scene = ExtResource("8_cvmbd")
+resource_drop_scene = ExtResource("6_mwfav")
+projectile_scene = ExtResource("9_ft6cd")
+missile_scene = ExtResource("10_bb450")
+
+[node name="Player" parent="." unique_id=1893769054 instance=ExtResource("11_mwfav")]
+position = Vector2(581, 469)
+projectile_scene = ExtResource("12_3p2gp")
+
+[node name="Sprite2D" parent="Player" index="0"]
+texture = ExtResource("13_ft6cd")
+
+[node name="Thruster" parent="Player" index="4"]
+offset = Vector2(0, 4)
+
+[node name="Base" parent="." unique_id=749119863 instance=ExtResource("13_cvmbd")]
+position = Vector2(590, 697)
+
+[node name="Ground" parent="." unique_id=1496995049 instance=ExtResource("14_ft6cd")]
+position = Vector2(637, 742)
+
+[node name="Sprite2D" parent="Ground" index="0"]
+texture = ExtResource("16_cvmbd")
+
+[node name="background" type="Sprite2D" parent="." unique_id=1691372248]
+z_index = -1
+position = Vector2(637, 364)
+texture = ExtResource("17_ft6cd")
+
+[node name="HUD" parent="." unique_id=897943969 node_paths=PackedStringArray("player", "base") instance=ExtResource("18_bb450")]
+player = NodePath("../Player")
+base = NodePath("../Base")
+
+[editable path="AsteroidSpawner"]
+[editable path="Player"]
+[editable path="Base"]
+[editable path="Ground"]
