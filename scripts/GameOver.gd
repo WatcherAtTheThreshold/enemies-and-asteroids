@@ -9,7 +9,7 @@ func _process(_delta: float) -> void:
 	if not visible:
 		return
 	if Input.is_action_just_pressed("ui_accept"):
-		get_tree().reload_current_scene()
+		get_tree().change_scene_to_file("res://scenes/StartScreen.tscn")
 
 func _on_restart_button_pressed() -> void:
-	get_tree().reload_current_scene()
+	get_tree().change_scene_to_file("res://scenes/StartScreen.tscn")

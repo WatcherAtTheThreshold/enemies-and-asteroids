@@ -39,12 +39,16 @@ func spawn_asteroid() -> void:
 
 	var asteroid = scene.instantiate()
 
-	# Wire in the resource drop scene so the asteroid can spawn pickups on death
+	# Wire in scenes so the asteroid can spawn pickups and split on death
 	asteroid.resource_drop_scene = resource_drop_scene
+	asteroid.split_scene_small = small_asteroid_scene
+	asteroid.split_scene_medium = medium_asteroid_scene
 
 	# Scale HP for difficulty — must happen before add_child so _ready() picks it up
+	var mult: float = _hp_multiplier_for_day(day_number)
+	asteroid._day_hp_multiplier = mult
 	var health: Node = asteroid.get_node("HealthComponent")
-	health.max_hp = int(health.max_hp * _hp_multiplier_for_day(day_number))
+	health.max_hp = int(health.max_hp * mult)
 
 	# Position: one of three horizontal zones, randomised within each zone
 	var vp_size = get_viewport_rect().size
@@ -62,27 +66,37 @@ func spawn_asteroid() -> void:
 # --- Difficulty helpers ---
 
 func _pick_scene_for_day() -> PackedScene:
-	if day_number < 4:
-		return small_asteroid_scene
-	elif day_number < 8:
-		return ([small_asteroid_scene, medium_asteroid_scene] as Array).pick_random()
+	var s = small_asteroid_scene
+	var m = medium_asteroid_scene
+	var l = large_asteroid_scene
+	# Pool sizes are tuned accounting for the split mechanic —
+	# large/medium are much more dangerous than raw HP suggests.
+	var pool: Array
+	if day_number <= 2:
+		pool = [s, s, s, s, s]
+	elif day_number <= 4:
+		pool = [s, s, s, s, m]
+	elif day_number <= 6:
+		pool = [s, s, s, m, m]
+	elif day_number <= 8:
+		pool = [s, s, m, m, l]
+	elif day_number <= 11:
+		pool = [s, m, m, l, l]
 	else:
-		# Day 10+: extra large entries weight the pool toward big asteroids
-		var pool: Array = [small_asteroid_scene, medium_asteroid_scene, large_asteroid_scene]
-		if day_number >= 10:
-			pool.append(large_asteroid_scene)
-			pool.append(large_asteroid_scene)
-		return pool.pick_random()
+		pool = [s, m, l, l, l, l]
+	return pool.pick_random()
 
 func _interval_for_day(day: int) -> float:
 	return maxf(min_spawn_interval, base_spawn_interval - (day * 0.1))
 
 func _hp_multiplier_for_day(day: int) -> float:
-	if day < 4:
+	if day <= 3:
 		return 1.0
-	elif day < 7:
-		return 1.2
-	elif day < 10:
-		return 1.5
-	else:
+	elif day <= 6:
+		return 1.3
+	elif day <= 9:
+		return 1.6
+	elif day <= 13:
 		return 2.0
+	else:
+		return 2.5

@@ -18,6 +18,10 @@ var _pickup_structure: AudioStreamPlayer
 var _pickup_weapon: AudioStreamPlayer
 var _resource_hit_base: AudioStreamPlayer
 
+# Music
+var _music_tracks: Array[AudioStreamPlayer]
+var _last_music_index: int = -1
+
 func _ready() -> void:
 	_asteroid_hit_base = [
 		_make("res://assets/sounds/asteroids/asteroid-hit-base.mp3"),
@@ -42,6 +46,15 @@ func _ready() -> void:
 	_pickup_structure = _make("res://assets/sounds/pickups/pickup-resource-structure.mp3")
 	_pickup_weapon    = _make("res://assets/sounds/pickups/pickup-resource-weapon.mp3")
 	_resource_hit_base = _make("res://assets/sounds/pickups/resource-hit-base.mp3")
+
+	_music_tracks = [
+		_make_music("res://assets/music/spaceMusic1.ogg"),
+		_make_music("res://assets/music/spaceMusic2.ogg"),
+		_make_music("res://assets/music/spaceMusic3.ogg"),
+	]
+	for track in _music_tracks:
+		track.finished.connect(_on_music_finished)
+	_play_next_track()
 
 # --- Public API ---
 
@@ -72,10 +85,28 @@ func pickup_resource(resource_type: String) -> void:
 func resource_hit_base() -> void:
 	_resource_hit_base.play()
 
-# --- Helper ---
+# --- Music ---
+
+func _play_next_track() -> void:
+	var available: Array = range(_music_tracks.size())
+	available.erase(_last_music_index)
+	_last_music_index = available.pick_random()
+	_music_tracks[_last_music_index].play()
+
+func _on_music_finished() -> void:
+	_play_next_track()
+
+# --- Helpers ---
 
 func _make(path: String) -> AudioStreamPlayer:
 	var player := AudioStreamPlayer.new()
 	player.stream = load(path)
+	add_child(player)
+	return player
+
+func _make_music(path: String) -> AudioStreamPlayer:
+	var player := AudioStreamPlayer.new()
+	player.stream = load(path)
+	player.volume_db = -6.0
 	add_child(player)
 	return player

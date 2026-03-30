@@ -5,6 +5,7 @@ const PROJECTILE_SCENE = preload("res://scenes/TurretProjectile.tscn")
 
 @export var fire_rate: float = 2.0
 @export var detection_range: float = 500.0
+var projectile_damage: int = 1
 
 var _fire_timer: float = 0.0
 var _target: Node2D = null
@@ -44,4 +45,5 @@ func _fire() -> void:
 	var proj = PROJECTILE_SCENE.instantiate()
 	proj.global_position = $WeaponMount.global_position
 	proj.direction = (_target.global_position - $WeaponMount.global_position).normalized()
+	proj.DAMAGE = projectile_damage
 	get_tree().current_scene.add_child(proj)

@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://dicalw37v0a41" path="res://assets/ships/player-ship.png" id="13_ft6cd"]
 [ext_resource type="PackedScene" path="res://scenes/Ground.tscn" id="14_ft6cd"]
 [ext_resource type="Texture2D" uid="uid://2su7w1f1t5ar" path="res://assets/backgrounds/ground-strip.png" id="16_cvmbd"]
-[ext_resource type="Texture2D" uid="uid://28hoo5i8x5xi" path="res://assets/backgrounds/background.png" id="17_ft6cd"]
+[ext_resource type="PackedScene" path="res://scenes/Background.tscn" id="17_ft6cd"]
 [ext_resource type="PackedScene" uid="uid://dsryxewlyo4b0" path="res://scenes/HUD.tscn" id="18_bb450"]
 
 [node name="Main" type="Node2D" unique_id=44375873 node_paths=PackedStringArray("asteroid_spawner", "enemy_spawner", "player", "base")]
@@ -55,7 +55,12 @@ texture = ExtResource("13_ft6cd")
 offset = Vector2(0, 4)
 
 [node name="Base" parent="." unique_id=749119863 instance=ExtResource("13_cvmbd")]
-position = Vector2(590, 697)
+z_index = -1
+position = Vector2(185, 694)
+
+[node name="Turret" parent="Base" index="3"]
+z_index = -6
+position = Vector2(0, -18)
 
 [node name="Ground" parent="." unique_id=1496995049 instance=ExtResource("14_ft6cd")]
 position = Vector2(637, 742)
@@ -63,10 +68,10 @@ position = Vector2(637, 742)
 [node name="Sprite2D" parent="Ground" index="0"]
 texture = ExtResource("16_cvmbd")
 
-[node name="background" type="Sprite2D" parent="." unique_id=1691372248]
-z_index = -1
-position = Vector2(637, 364)
-texture = ExtResource("17_ft6cd")
+[node name="Background" parent="." unique_id=1691372248 instance=ExtResource("17_ft6cd")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1043644238]
+position = Vector2(640, 360)
 
 [node name="HUD" parent="." unique_id=897943969 node_paths=PackedStringArray("player", "base") instance=ExtResource("18_bb450")]
 player = NodePath("../Player")
@@ -76,3 +81,4 @@ base = NodePath("../Base")
 [editable path="Player"]
 [editable path="Base"]
 [editable path="Ground"]
+[editable path="Background"]

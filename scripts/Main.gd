@@ -32,6 +32,14 @@ func _ready() -> void:
 
 	start_day(1)
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel") or (event is InputEventKey and event.keycode == KEY_F11 and event.pressed):
+		var mode = DisplayServer.window_get_mode()
+		if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
 func _process(_delta: float) -> void:
 	pass  # day end is driven by base_exited_screen signal
 

@@ -4,6 +4,7 @@ extends CharacterBody2D
 @export var move_speed: float = 200.0
 @export var fire_rate: float = 0.15
 @export var projectile_scene: PackedScene
+var projectile_damage: int = 1
 
 var _fire_timer: float = 0.0
 var _last_shoot_dir: Vector2 = Vector2.UP  # default aim upward
@@ -86,6 +87,7 @@ func _spawn_projectile(dir: Vector2) -> void:
 	var proj = projectile_scene.instantiate()
 	proj.global_position = $WeaponMount.global_position
 	proj.direction = dir
+	proj.DAMAGE = projectile_damage
 	get_parent().add_child(proj)
 
 # --- Damage ---
@@ -95,11 +97,23 @@ func take_damage(amount: int) -> void:
 
 func _on_health_changed(current_hp: int, max_hp_val: int) -> void:
 	_flash_damage()
+	_screen_shake(current_hp, max_hp_val)
 
 func _flash_damage() -> void:
 	$Sprite2D.modulate = Color.RED
 	var tween = create_tween()
 	tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.25)
+
+func _screen_shake(current_hp: int, max_hp: int) -> void:
+	var camera = get_viewport().get_camera_2d()
+	if camera == null:
+		return
+	var intensity = lerp(4.0, 14.0, 1.0 - float(current_hp) / float(max_hp))
+	var tween = create_tween()
+	for i in 6:
+		var offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		tween.tween_property(camera, "offset", offset, 0.03)
+	tween.tween_property(camera, "offset", Vector2.ZERO, 0.05)
 
 func _on_died() -> void:
 	GameManager.trigger_game_over("ship")

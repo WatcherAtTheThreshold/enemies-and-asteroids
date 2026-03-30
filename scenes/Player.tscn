@@ -21,7 +21,7 @@ shape = SubResource("1")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("2")
-max_hp = 10
+max_hp = 15
 
 [node name="WeaponMount" type="Marker2D" parent="."]
 position = Vector2(0.0, -16.0)
@@ -32,3 +32,4 @@ texture = ExtResource("3")
 hframes = 3
 frame = 0
 visible = false
+

@@ -3,7 +3,7 @@ extends CanvasLayer
 signal upgrade_chosen
 
 const TURRET_SCENE = preload("res://scenes/Turret.tscn")
-const TURRET_SLOTS: Array = [Vector2(-55.0, -20.0), Vector2(55.0, -20.0)]
+const TURRET_SLOTS: Array = [Vector2(-45.0, -20.0), Vector2(45.0, -20.0)]
 
 var _player = null
 var _base = null
@@ -23,8 +23,32 @@ const UPGRADES: Array = [
 		"cost": 3,
 	},
 	{
+		"name": "Expand Cockpit",
+		"desc": "Increase player max HP by 3.",
+		"cost_type": "shield",
+		"cost": 3,
+	},
+	{
+		"name": "Reinforce Base",
+		"desc": "Increase base max HP by 10.",
+		"cost_type": "physical",
+		"cost": 3,
+	},
+	{
 		"name": "Rapid Fire",
-		"desc": "Increase player fire rate by 20%.",
+		"desc": "Increase player fire rate by 5%.",
+		"cost_type": "weapon",
+		"cost": 1,
+	},
+	{
+		"name": "Overcharge",
+		"desc": "Player shots deal +1 damage.",
+		"cost_type": "weapon",
+		"cost": 2,
+	},
+	{
+		"name": "Turret Upgrade",
+		"desc": "Turret shots deal +1 damage.",
 		"cost_type": "weapon",
 		"cost": 2,
 	},
@@ -42,7 +66,7 @@ const UPGRADES: Array = [
 	},
 	{
 		"name": "Deploy Turret",
-		"desc": "Place an auto-targeting turret beside the base. Max 2.",
+		"desc": "Deploy a second turret. Once both deployed, upgrades turret fire rate by 25% instead.",
 		"cost_type": "weapon",
 		"cost": 4,
 	},
@@ -95,8 +119,6 @@ func _make_card(upgrade: Dictionary) -> Control:
 func _is_available(upgrade: Dictionary) -> bool:
 	if GameManager.get_resource(upgrade["cost_type"]) < upgrade["cost"]:
 		return false
-	if upgrade["name"] == "Deploy Turret":
-		return get_tree().get_nodes_in_group("turret").size() < 2
 	return true
 
 func _on_card_selected(upgrade: Dictionary) -> void:
@@ -112,9 +134,25 @@ func _apply(upgrade_name: String) -> void:
 		"Repair Base":
 			if _base:
 				_base.get_node("HealthComponent").heal(20)
+		"Expand Cockpit":
+			if _player:
+				var hc = _player.get_node("HealthComponent")
+				hc.max_hp += 3
+				hc.heal(3)
+		"Reinforce Base":
+			if _base:
+				var hc = _base.get_node("HealthComponent")
+				hc.max_hp += 10
+				hc.heal(10)
 		"Rapid Fire":
 			if _player:
-				_player.fire_rate *= 0.8
+				_player.fire_rate *= 0.95
+		"Overcharge":
+			if _player:
+				_player.projectile_damage += 1
+		"Turret Upgrade":
+			for t in get_tree().get_nodes_in_group("turret"):
+				t.projectile_damage += 1
 		"Afterburners":
 			if _player:
 				_player.move_speed += 40.0
@@ -123,10 +161,15 @@ func _apply(upgrade_name: String) -> void:
 				_spawner.base_spawn_interval += 0.5
 		"Deploy Turret":
 			if _base:
-				var slot = get_tree().get_nodes_in_group("turret").size()
-				var turret = TURRET_SCENE.instantiate()
-				turret.position = TURRET_SLOTS[slot]
-				_base.add_child(turret)
+				var turrets = get_tree().get_nodes_in_group("turret")
+				if turrets.size() < 3:
+					var turret = TURRET_SCENE.instantiate()
+					turret.position = TURRET_SLOTS[turrets.size() - 1]
+					turret.z_index = -1
+					_base.add_child(turret)
+				else:
+					for t in turrets:
+						t.fire_rate = maxf(0.3, t.fire_rate * 0.75)
 
 func _finish() -> void:
 	visible = false

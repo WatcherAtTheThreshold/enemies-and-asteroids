@@ -5,7 +5,7 @@ extends Area2D
 var direction: Vector2 = Vector2.UP
 
 const SPEED: float = 500.0
-const DAMAGE: int = 1
+var DAMAGE: int = 1
 
 func _ready() -> void:
 	Placeholder.rect($Sprite2D, Color(0.6, 1.0, 0.2), 8, 16)

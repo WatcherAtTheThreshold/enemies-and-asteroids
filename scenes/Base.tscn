@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cji4khcgx3y4d" path="res://scripts/Base.gd" id="1"]
 [ext_resource type="Script" uid="uid://cil8fplxsio71" path="res://scripts/HealthComponent.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://c2olygwpdmqyw" path="res://assets/base/moon-base.png" id="2_j2xnf"]
+[ext_resource type="PackedScene" path="res://scenes/Turret.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(80, 32)
@@ -21,3 +22,6 @@ shape = SubResource("1")
 [node name="HealthComponent" type="Node" parent="." unique_id=1161218430]
 script = ExtResource("2")
 max_hp = 50
+
+[node name="Turret" parent="." instance=ExtResource("3")]
+position = Vector2(-55.0, -20.0)

@@ -113,7 +113,7 @@ func _die() -> void:
 	_spawn_resources()
 	queue_free()
 
-const ENEMY_DROP_POOL: Array = ["weapon", "weapon", "shield", "shield", "general", "physical"]
+const ENEMY_DROP_POOL: Array = ["weapon", "weapon", "shield", "general", "physical"]
 
 func _spawn_resources() -> void:
 	if resource_drop_scene == null:
@@ -125,4 +125,4 @@ func _spawn_resources() -> void:
 			randf_range(-30.0, 30.0),
 			randf_range(-30.0, 30.0)
 		)
-		get_parent().add_child(res)
+		get_parent().call_deferred("add_child", res)
