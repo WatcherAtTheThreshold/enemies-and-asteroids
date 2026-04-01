@@ -10,6 +10,7 @@ var _fire_timer: float = 0.0
 var _last_shoot_dir: Vector2 = Vector2.UP  # default aim upward
 var _thruster_timer: float = 0.0
 const THRUSTER_FRAME_TIME: float = 0.08
+var _prev_hp: int = -1
 
 func _ready() -> void:
 	Placeholder.rect($Sprite2D, Color(0.2, 0.9, 0.3), 32, 32)
@@ -96,8 +97,10 @@ func take_damage(amount: int) -> void:
 	$HealthComponent.take_damage(amount)
 
 func _on_health_changed(current_hp: int, max_hp_val: int) -> void:
-	_flash_damage()
-	_screen_shake(current_hp, max_hp_val)
+	if _prev_hp == -1 or current_hp < _prev_hp:
+		_flash_damage()
+		_screen_shake(current_hp, max_hp_val)
+	_prev_hp = current_hp
 
 func _flash_damage() -> void:
 	$Sprite2D.modulate = Color.RED
@@ -116,4 +119,5 @@ func _screen_shake(current_hp: int, max_hp: int) -> void:
 	tween.tween_property(camera, "offset", Vector2.ZERO, 0.05)
 
 func _on_died() -> void:
+	SoundManager.ship_explode()
 	GameManager.trigger_game_over("ship")

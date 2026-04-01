@@ -16,7 +16,7 @@ collision_mask = 7
 script = ExtResource("1")
 move_speed = 50.0
 rotation_speed = 0.15
-resource_drop_count = 7
+resource_drop_count = 3
 size_category = "large"
 impact_damage = 25
 

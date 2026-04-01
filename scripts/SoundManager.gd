@@ -11,6 +11,8 @@ var _enemy_projectile: AudioStreamPlayer
 
 # Player
 var _player_projectile: Array[AudioStreamPlayer]
+var _ship_explosion: AudioStreamPlayer
+var _base_explosion: AudioStreamPlayer
 
 # Pickups
 var _pickup_shield: AudioStreamPlayer
@@ -42,6 +44,8 @@ func _ready() -> void:
 		_make("res://assets/sounds/player/player-projectile2.mp3"),
 		_make("res://assets/sounds/player/player-projectile3.mp3"),
 	]
+	_ship_explosion = _make("res://assets/sounds/player/ship-explosion.wav")
+	_base_explosion = _make("res://assets/sounds/base/base-explosion.wav")
 	_pickup_shield    = _make("res://assets/sounds/pickups/pickup-resource-shield.mp3")
 	_pickup_structure = _make("res://assets/sounds/pickups/pickup-resource-structure.mp3")
 	_pickup_weapon    = _make("res://assets/sounds/pickups/pickup-resource-weapon.mp3")
@@ -51,6 +55,11 @@ func _ready() -> void:
 		_make_music("res://assets/music/spaceMusic1.ogg"),
 		_make_music("res://assets/music/spaceMusic2.ogg"),
 		_make_music("res://assets/music/spaceMusic3.ogg"),
+		_make_music("res://assets/music/spaceMusic4.ogg"),
+		_make_music("res://assets/music/spaceMusic5.ogg"),
+		_make_music("res://assets/music/spaceMusic6.ogg"),
+		_make_music("res://assets/music/spaceMusic7.ogg"),
+		_make_music("res://assets/music/spaceMusic8.ogg"),
 	]
 	for track in _music_tracks:
 		track.finished.connect(_on_music_finished)
@@ -78,12 +87,18 @@ func player_fire() -> void:
 
 func pickup_resource(resource_type: String) -> void:
 	match resource_type:
-		"shield":   _pickup_shield.play()
-		"weapon":   _pickup_weapon.play()
-		_:          _pickup_structure.play()  # general + physical
+		"shield", "ship-health":   _pickup_shield.play()
+		"weapon":                  _pickup_weapon.play()
+		_:                         _pickup_structure.play()  # general + physical + base-health
 
 func resource_hit_base() -> void:
 	_resource_hit_base.play()
+
+func ship_explode() -> void:
+	_ship_explosion.play()
+
+func base_explode() -> void:
+	_base_explosion.play()
 
 # --- Music ---
 

@@ -4,7 +4,7 @@ extends Area2D
 # Set by EnemyShip at spawn time
 var direction: Vector2 = Vector2.DOWN
 
-const SPEED: float = 300.0
+var SPEED: float = 300.0
 const DAMAGE: int = 1
 
 func _ready() -> void:

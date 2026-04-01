@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://2su7w1f1t5ar" path="res://assets/backgrounds/ground-strip.png" id="16_cvmbd"]
 [ext_resource type="PackedScene" path="res://scenes/Background.tscn" id="17_ft6cd"]
 [ext_resource type="PackedScene" uid="uid://dsryxewlyo4b0" path="res://scenes/HUD.tscn" id="18_bb450"]
+[ext_resource type="Texture2D" uid="uid://ckbswmpbx7ydk" path="res://assets/ui/screen-overlay/screen-overlay.png" id="19_overlay"]
 
 [node name="Main" type="Node2D" unique_id=44375873 node_paths=PackedStringArray("asteroid_spawner", "enemy_spawner", "player", "base")]
 script = ExtResource("1")
@@ -73,12 +74,52 @@ texture = ExtResource("16_cvmbd")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1043644238]
 position = Vector2(640, 360)
 
+[node name="ScreenOverlay" type="CanvasLayer" parent="." unique_id=1330713352]
+layer = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="ScreenOverlay" unique_id=1937062025]
+position = Vector2(640, 360)
+texture = ExtResource("19_overlay")
+
 [node name="HUD" parent="." unique_id=897943969 node_paths=PackedStringArray("player", "base") instance=ExtResource("18_bb450")]
 player = NodePath("../Player")
 base = NodePath("../Base")
+
+[node name="Screen" parent="HUD" index="0" unique_id=1940175764]
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DayLabel" parent="HUD/Screen" index="0" unique_id=2065436628]
+layout_mode = 1
+anchors_preset = 5
+offset_top = 18.0
+offset_bottom = 42.0
+grow_horizontal = 2
+
+[node name="PlayerHP" parent="HUD/Screen" index="1" unique_id=1871526055]
+offset_left = 49.0
+offset_top = 25.0
+offset_right = 303.0
+offset_bottom = 49.0
+
+[node name="BaseHP" parent="HUD/Screen" index="2" unique_id=1533058486]
+layout_mode = 1
+anchors_preset = 1
+offset_left = -315.0
+offset_top = 25.0
+offset_right = -31.999756
+offset_bottom = 49.0
+grow_horizontal = 0
+
+[node name="Resources" parent="HUD/Screen" index="3" unique_id=1436830839]
+offset_left = 23.0
+offset_top = -150.0
+offset_right = 203.0
+offset_bottom = -19.0
 
 [editable path="AsteroidSpawner"]
 [editable path="Player"]
 [editable path="Base"]
 [editable path="Ground"]
 [editable path="Background"]
+[editable path="HUD"]

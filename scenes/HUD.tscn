@@ -41,6 +41,10 @@ max_value = 10.0
 value = 10.0
 show_percentage = false
 
+[node name="HPText" type="Label" parent="Screen/PlayerHP" unique_id=312847291]
+layout_mode = 2
+text = "10/10"
+
 [node name="BaseHP" type="HBoxContainer" parent="Screen" unique_id=1533058486]
 layout_mode = 0
 anchor_left = 1.0
@@ -61,6 +65,10 @@ size_flags_horizontal = 3
 max_value = 50.0
 value = 50.0
 show_percentage = false
+
+[node name="HPText" type="Label" parent="Screen/BaseHP" unique_id=198374625]
+layout_mode = 2
+text = "50/50"
 
 [node name="Resources" type="VBoxContainer" parent="Screen" unique_id=1436830839]
 layout_mode = 1

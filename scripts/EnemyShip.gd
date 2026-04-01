@@ -7,7 +7,7 @@ signal enemy_destroyed(position: Vector2)
 @export var move_speed: float = 80.0
 @export var fire_rate: float = 1.5
 @export var missile_fire_rate: float = 5.0
-@export var resource_drop_count: int = 6
+@export var resource_drop_count: int = 4
 @export var resource_drop_scene: PackedScene
 @export var missile_scene: PackedScene
 @export var projectile_scene: PackedScene
@@ -22,6 +22,14 @@ var base: Node2D = null
 
 var fire_timer: float = 0.0
 var missile_timer: float = 0.0
+var _missile_count: int = 0  # tracks alternating player missile
+
+# Scaled stats — set in _ready() from GameManager.day_number
+var _projectile_speed: float = 300.0
+var _effective_fire_rate: float = 1.5
+var _effective_missile_rate: float = 5.0
+var _player_missile_day: int = 6  # day when player-targeting missiles begin
+
 
 func _ready() -> void:
 	Placeholder.rect($Sprite2D, Color(0.8, 0.1, 0.1), 64, 64)
@@ -29,9 +37,20 @@ func _ready() -> void:
 	SoundManager.enemy_appears()
 	$HealthComponent.died.connect(_on_health_component_died)
 	$HealthComponent.health_changed.connect(_on_health_changed)
-	# Initialise HP bar to full
 	$HPBar.max_value = $HealthComponent.max_hp
 	$HPBar.value = $HealthComponent.max_hp
+	_apply_day_scaling(GameManager.day_number)
+
+func _apply_day_scaling(day: int) -> void:
+	# Projectile speed: 300 at day 1, up to 550 at day 15+
+	_projectile_speed = minf(550.0, 300.0 + (day - 1) * 17.0)
+	# Projectile fire rate: 1.5s at day 1, floor at 0.6s at day 15+
+	_effective_fire_rate = maxf(0.6, 1.5 - (day - 1) * 0.06)
+	# Missile fire rate: 5.0s at day 1, floor at 2.0s at day 15+
+	_effective_missile_rate = maxf(2.0, 5.0 - (day - 1) * 0.2)
+	# Sync the exported values so timers use scaled rates
+	fire_rate = _effective_fire_rate
+	missile_fire_rate = _effective_missile_rate
 
 func _physics_process(delta: float) -> void:
 	match state:
@@ -73,25 +92,30 @@ func _shoot_at_player(delta: float) -> void:
 	var proj = projectile_scene.instantiate()
 	proj.global_position = $WeaponMount.global_position
 	proj.direction = (player.global_position - $WeaponMount.global_position).normalized()
+	proj.SPEED = _projectile_speed
 	get_parent().add_child(proj)
 
 func _shoot_missile_at_base(delta: float) -> void:
-	if base == null or missile_scene == null:
+	if missile_scene == null:
 		return
 	missile_timer -= delta
 	if missile_timer > 0.0:
 		return
 	missile_timer = missile_fire_rate
+	_missile_count += 1
 	SoundManager.enemy_fire_missile()
 	var missile = missile_scene.instantiate()
 	missile.global_position = $MissileLauncher.global_position
-	missile.target_position = base.global_position
+	# From the player-missile day onward, every other missile targets the player
+	var aim_at_player = (GameManager.day_number >= _player_missile_day
+		and player != null and _missile_count % 2 == 0)
+	missile.target_position = player.global_position if aim_at_player else (base.global_position if base != null else player.global_position)
 	get_parent().add_child(missile)
 
 # --- Movement ---
 
 func _strafe(delta: float) -> void:
-	# Horizontal sine oscillation — feels aggressive without chasing the player yet
+	# Horizontal sine oscillation — feels aggressive without chasing the player
 	var strafe_x = sin(Time.get_ticks_msec() * 0.001 * 1.5) * move_speed
 	velocity = Vector2(strafe_x, 0.0)
 	move_and_slide()
@@ -113,7 +137,7 @@ func _die() -> void:
 	_spawn_resources()
 	queue_free()
 
-const ENEMY_DROP_POOL: Array = ["weapon", "weapon", "shield", "general", "physical"]
+const ENEMY_DROP_POOL: Array = ["weapon", "weapon", "shield", "ship-health", "base-health"]
 
 func _spawn_resources() -> void:
 	if resource_drop_scene == null:

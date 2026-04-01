@@ -18,7 +18,9 @@ func _physics_process(delta: float) -> void:
 	_find_nearest_target()
 	if _target == null:
 		return
-	rotation = (_target.global_position - global_position).normalized().angle() + PI / 2.0
+	var raw_angle = (_target.global_position - global_position).normalized().angle()
+	raw_angle = clampf(raw_angle, -PI, 0.0)
+	rotation = raw_angle + PI / 2.0
 	_fire_timer -= delta
 	if _fire_timer <= 0.0:
 		_fire_timer = fire_rate

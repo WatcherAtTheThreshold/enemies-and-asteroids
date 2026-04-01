@@ -116,7 +116,7 @@ func _split() -> void:
 func _spread_dir(angle_deg: float) -> Vector2:
 	return _move_direction.rotated(deg_to_rad(angle_deg))
 
-const ASTEROID_DROP_POOL: Array = ["general", "general", "general", "physical", "physical", "shield"]
+const ASTEROID_DROP_POOL: Array = ["general", "general", "physical", "shield", "ship-health", "base-health"]
 
 func _spawn_resources() -> void:
 	if resource_drop_scene == null:

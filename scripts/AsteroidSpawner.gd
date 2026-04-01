@@ -7,7 +7,7 @@ extends Node2D
 @export var resource_drop_scene: PackedScene
 
 @export var base_spawn_interval: float = 2.5
-@export var min_spawn_interval: float = 0.6
+@export var min_spawn_interval: float = 0.65
 
 var day_number: int = 1
 
@@ -79,11 +79,11 @@ func _pick_scene_for_day() -> PackedScene:
 	elif day_number <= 6:
 		pool = [s, s, s, m, m]
 	elif day_number <= 8:
-		pool = [s, s, m, m, l]
+		pool = [s, s, s, s, m, m, m, m, m, l]
 	elif day_number <= 11:
-		pool = [s, m, m, l, l]
+		pool = [s, s, m, m, m, m, m, l, l, l]
 	else:
-		pool = [s, m, l, l, l, l]
+		pool = [s, s, s, m, m, m, m, l, l, l]
 	return pool.pick_random()
 
 func _interval_for_day(day: int) -> float:
@@ -96,7 +96,5 @@ func _hp_multiplier_for_day(day: int) -> float:
 		return 1.3
 	elif day <= 9:
 		return 1.6
-	elif day <= 13:
-		return 2.0
 	else:
-		return 2.5
+		return 2.0

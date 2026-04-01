@@ -85,36 +85,77 @@ func _populate_cards() -> void:
 		child.queue_free()
 	var pool: Array = UPGRADES.duplicate()
 	pool.shuffle()
-	for upgrade in pool.slice(0, 3):
-		container.add_child(_make_card(upgrade))
 
-func _make_card(upgrade: Dictionary) -> Control:
-	var card := VBoxContainer.new()
-	card.custom_minimum_size = Vector2(200, 140)
+	var select_btns: Array[Button] = []
+	for upgrade in pool.slice(0, 3):
+		var pair = _make_card(upgrade)
+		container.add_child(pair[0])
+		select_btns.append(pair[1])
+
+	# Wire left/right focus navigation between the three Select buttons
+	var skip_btn = $Screen/Panel/SkipButton
+	for i in select_btns.size():
+		var btn: Button = select_btns[i]
+		btn.focus_neighbor_left   = select_btns[(i - 1 + select_btns.size()) % select_btns.size()].get_path()
+		btn.focus_neighbor_right  = select_btns[(i + 1) % select_btns.size()].get_path()
+		btn.focus_neighbor_top    = btn.get_path()
+		btn.focus_neighbor_bottom = skip_btn.get_path()
+	skip_btn.focus_neighbor_top    = select_btns[1].get_path()
+	skip_btn.focus_neighbor_bottom = skip_btn.get_path()
+
+	# Auto-focus first affordable card, fall back to Skip
+	var first_available = select_btns.filter(func(b): return not b.disabled)
+	if first_available.size() > 0:
+		first_available[0].call_deferred("grab_focus")
+	else:
+		skip_btn.call_deferred("grab_focus")
+
+func _make_card(upgrade: Dictionary) -> Array:
+	var card := Control.new()
+	card.custom_minimum_size = Vector2(180, 240)
+
+	var bg := TextureRect.new()
+	bg.texture = load("res://assets/ui/upgrade-cards/card-%s.png" % upgrade["cost_type"])
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.stretch_mode = TextureRect.STRETCH_SCALE
+	card.add_child(bg)
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_right", 12)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_bottom", 12)
+	card.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(vbox)
 
 	var name_lbl := Label.new()
 	name_lbl.text = upgrade["name"]
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	card.add_child(name_lbl)
+	vbox.add_child(name_lbl)
 
 	var desc_lbl := Label.new()
 	desc_lbl.text = upgrade["desc"]
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
-	card.add_child(desc_lbl)
+	desc_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(desc_lbl)
 
 	var cost_lbl := Label.new()
 	cost_lbl.text = "Cost: %d %s" % [upgrade["cost"], upgrade["cost_type"]]
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	card.add_child(cost_lbl)
+	vbox.add_child(cost_lbl)
 
 	var btn := Button.new()
 	btn.text = "Select"
 	btn.disabled = not _is_available(upgrade)
 	btn.pressed.connect(_on_card_selected.bind(upgrade))
-	card.add_child(btn)
+	vbox.add_child(btn)
 
-	return card
+	return [card, btn]
 
 func _is_available(upgrade: Dictionary) -> bool:
 	if GameManager.get_resource(upgrade["cost_type"]) < upgrade["cost"]:

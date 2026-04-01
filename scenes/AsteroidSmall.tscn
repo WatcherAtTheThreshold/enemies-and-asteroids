@@ -15,6 +15,7 @@ collision_layer = 16
 collision_mask = 7
 script = ExtResource("1")
 move_speed = 90.0
+resource_drop_count = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=99609687]
 texture = ExtResource("2_nrnlx")

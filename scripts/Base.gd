@@ -22,6 +22,8 @@ func _physics_process(delta: float) -> void:
 		position.x = -150.0
 
 func take_damage(amount: int) -> void:
+	if position.x < 0.0 or position.x > get_viewport_rect().size.x:
+		return
 	$HealthComponent.take_damage(amount)
 
 func _on_health_changed(current_hp: int, max_hp_val: int) -> void:
@@ -33,4 +35,5 @@ func _flash_damage() -> void:
 	tween.tween_property($Sprite2D, "modulate", Color.WHITE, 0.25)
 
 func _on_died() -> void:
+	SoundManager.base_explode()
 	GameManager.trigger_game_over("base")

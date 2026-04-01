@@ -46,6 +46,7 @@ func get_resource(type: String) -> int:
 func spend_resource(type: String, amount: int) -> bool:
 	if get_resource(type) >= amount:
 		resources[type] -= amount
+		resource_collected.emit(type)
 		return true
 	return false
 

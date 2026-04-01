@@ -20,13 +20,13 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	position += _direction * SPEED * delta
-	# Cull once well below screen (missiles travel downward toward the base)
+	# Cull once off screen in any direction
 	var vp = get_viewport_rect()
-	if position.y > vp.size.y + 150.0:
+	if position.x < -150.0 or position.x > vp.size.x + 150.0 or position.y < -150.0 or position.y > vp.size.y + 150.0:
 		queue_free()
 
 func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("base"):
+	if body.is_in_group("base") or body.is_in_group("player"):
 		body.take_damage(DAMAGE)
 		queue_free()
 
