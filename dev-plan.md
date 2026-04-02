@@ -4,7 +4,11 @@
 
 ## Vision
 
-A short roguelike arcade game with a story. A scrappy pilot defends a moonbase from a meteor storm and a mysterious enemy force. Runs feel like a complete arc — intro, escalating danger, a climactic moment, and a victory or defeat. The tone is Saturday-morning cartoon: Speed Racer, Voltron, Star Wars Rebels.
+A short roguelike arcade game with a hidden mythos layer. On the surface: a scrappy pilot defends a moonbase from a meteor storm and a mysterious enemy force. Underneath: something ancient and wrong is pulling the strings.
+
+The tone is Saturday-morning cartoon on the surface — Speed Racer, Voltron, Star Wars Rebels — with a Lovecraftian twist revealed only at the end. Players who pay attention will notice the hints. Players who don't will still get a complete satisfying game.
+
+The story is told almost entirely in images with minimal text. The Eye of Shoggoth symbol appears three times: in the intro (unexplained), as a flash on enemies mid-game (hinted), and on the pilot's forehead in the victory portrait (payoff). First playthrough it's mysterious. Second playthrough it recontextualises everything.
 
 Target: a run lasts ~40 days. Days go by fast and the player loses track of time in the good way — the difficulty curve needs to stay ahead of the player curve the whole way. New threats introduced at key milestones reset the power dynamic before the cruise phase sets in.
 
@@ -12,47 +16,62 @@ Target: a run lasts ~40 days. Days go by fast and the player loses track of time
 
 ## Priority Order
 
-### 1. Intro Dialogue System
+### 1. Intro Dialogue System ✓ (built, tuning ongoing)
 
-A short back-and-forth between two portrait characters before gameplay begins. Static portraits with illustrated backgrounds. Short quips — players won't skip it if it's under 30 seconds.
+A short sequence before gameplay. Scrolling star background, two portrait characters, auto-advancing dialogue.
+
+**Sequence:**
+1. Stars scrolling. Eye of Shoggoth symbol fades in, holds ~3s, fades out. No text. No explanation.
+2. Pilot slides in from left (cinematic, 1.2s) — *"Moonbase, come in!"*
+3. Base operator slides in from right — *"We're in trouble! Please stop the meteor storm!"*
+4. Fade to black → game starts
 
 **Characters:**
-- **The Pilot** — Speed Racer / Voltron / Rebels energy. In a cockpit, stars moving behind him. Portrait sits top-right.
-- **Moonbase Operator** — at a console, silhouettes visible in the background. Portrait sits bottom-left.
+- **The Pilot** — Speed Racer / Voltron / Rebels energy. Cockpit portrait, stars behind her.
+- **Moonbase Operator** — at a console, silhouettes visible in the background.
 
-**Dialogue structure (draft):**
-> Pilot: "Moonbase, come in!"
-> Operator: "We're in trouble! Please stop the meteor storm!"
-> *gameplay begins*
-> *(later, on enemy day)*
-> Operator: "Strange signal on approach..."
-> *enemy arrives*
+**Future dialogue hooks:**
+- On first enemy day: Operator — *"Strange signal on approach..."* (triggers from EnemySpawner signal)
+- On Mega Asteroid event: Operator — *"That's not a meteor — it's enormous!"*
 
-**Technical approach:**
-- `IntroScene.tscn` — CanvasLayer over a static or scrolling background
-- Dialogue driven by a data array (text, portrait, speaker side)
-- Advances on button press / ui_accept
-- Optional: voice lines as AudioStreamPlayer clips per line
-- "Strange signal" trigger hooks into the enemy spawner signal that already exists
+**Assets needed:**
+- `pilot1.png` ✓
+- `base1.png` ✓
+- `eye-of-shoggoth.png` ✓
+- `pilot-marked.png` — pilot portrait with Eye of Shoggoth symbol on forehead (victory ending image)
+
+**Serendipity note — do not change:** The intro background has a green bloom nebula that lands directly behind the Eye of Shoggoth symbol. It reads as the alien origin point — the place the symbol is pointing to. This was unplanned and is better than anything designed deliberately. The symbol position (640, 360) and the background image must stay as-is to preserve this.
 
 ---
 
-### 2. Win Condition
+### 2. Win Condition — Defeat the Mega Asteroid
 
-**Target: survive Day 40.** After Day 40 the Operator says "You did it! We're safe." Victory sequence plays.
+The win condition is not surviving a day count — it's defeating the Mega Asteroid at day 30. Surviving day 30 with asteroids still in play is not enough. The Mega Asteroid must be destroyed.
 
-**Victory scene:**
-- Operator portrait: "You did it! We're safe!"
-- Pilot portrait: *something punchy*
-- Victory music (needs a track)
-- Fireworks — particle effect or sprite animation over the screen
-- Final score / day survived display
-- Return to Start Screen
+**Day 30 event sequence:**
+1. Asteroid spawner stops. Normal asteroids drift off screen.
+2. Background shifts — darker, fewer stars. Atmosphere changes.
+3. Brief inversion flash effect (bright frames, anime action style) — fast and disorienting.
+4. Mega Asteroid descends slowly. Operator: *"That's not a meteor — it's enormous!"*
+5. Player fights the Mega Asteroid as the final boss.
+6. If player dies → Game Over (normal).
+7. If Mega Asteroid destroyed → Victory sequence.
+
+**Victory sequence:**
+- Screen flash and shake on kill.
+- Operator: *"You did it! We're safe!"*
+- Pilot portrait slides in — **symbol of the Eye of Shoggoth on her forehead.** No explanation.
+- Victory music + fireworks.
+- Fade to Start Screen.
+
+**The mythos payoff:** The pilot doesn't say anything. The symbol is just there. The player connects it to the intro. That's the whole story.
 
 **What needs to exist:**
-- `Main.gd` checks `GameManager.day_number >= 40` at day end and routes to `VictoryScene` instead of next day
-- `VictoryScene.tscn` — reuses the dialogue portrait system from the intro
-- Fireworks effect
+- `Main.gd` triggers Mega Asteroid event at day 30 instead of routing to next day
+- `MegaAsteroid.tscn` / `MegaAsteroid.gd` — final boss
+- Inversion flash effect (full-screen ColorRect, rapid modulate flicker)
+- `VictoryScene.tscn` — pilot-marked portrait, fireworks, music
+- `pilot-marked.png` — pilot with symbol on forehead (key asset)
 - Victory music track
 
 ---
@@ -75,21 +94,25 @@ A short back-and-forth between two portrait characters before gameplay begins. S
 
 ---
 
-### 4. Mega Asteroid Event
+### 4. Mega Asteroid (Final Boss)
 
-A scripted set-piece moment, not a random spawn. Appears once per run at a fixed day (e.g. Day 10).
+The climax of the run. See Win Condition section for full sequence.
 
-**Behaviour:**
-- Much larger sprite, high HP (e.g. 150+)
-- Fires smaller asteroids downward in bursts as it takes damage (damage phases)
-- Moves slowly and deliberately — a boss fight feel
-- Operator dialogue trigger: "That's not a meteor — it's enormous!"
-- On death: large resource drop, screen shake, big explosion
+**Boss behaviour:**
+- Descends slowly and deliberately — feels inevitable
+- High HP (150+), scaled to day 30 difficulty
+- Fires bursts of smaller asteroids at damage phase thresholds (75%, 50%, 25% HP)
+- Inversion flash effect pulses occasionally during the fight — bright frames, disorienting
+- Enemies occasionally flash to show tentacles / wrong geometry (enemy modulate flicker in sickly purple-green — art swap later)
+- On death: massive screen shake, explosion, victory trigger
+
+**The enemy flash hint:**
+From day 15+ onwards, enemy ships occasionally flicker for 2–3 frames showing something wrong — tentacles, or a color/distortion shift (purple-green modulate). Not explained. Connects to the Eye of Shoggoth. A color flash is achievable now; a sprite swap can come later when art exists.
 
 **Technical approach:**
-- Separate `MegaAsteroid.tscn` / `MegaAsteroid.gd`
-- `Main.gd` checks for the trigger day and spawns it as a special event
-- Damage phase thresholds (75%, 50%, 25% HP) trigger burst spawns
+- `MegaAsteroid.tscn` / `MegaAsteroid.gd`
+- Inversion flash: full-screen ColorRect, rapid modulate between normal and inverted for a few frames
+- Enemy flicker: occasional tween on enemy modulate in `EnemyShip.gd`, triggered on a random timer
 
 ---
 
@@ -126,8 +149,8 @@ The current upgrade set runs a bit generic. Once the win condition and run lengt
 ## Difficulty Arc (Three Acts)
 
 - **Days 1–12:** Asteroids are the main threat. Enemy ship appears every 3 days — scary but manageable.
-- **Days 13–25:** Enemy variety becomes the dominant pressure. Interceptors appear, multiple ships possible. Asteroids are background noise. Mega Asteroid event around day 15–18.
-- **Days 26–40:** Both at full intensity. Player needs a strong build to keep up. Win condition at day 40.
+- **Days 13–29:** Enemy variety becomes the dominant pressure. Interceptors appear, multiple ships possible. Enemy flicker hints begin. Asteroids stay intense.
+- **Day 30:** Asteroids stop. Background shifts. Inversion flash. Mega Asteroid descends. Final boss fight. Win or die.
 
 New threats at act boundaries reset the power dynamic before the cruise phase sets in.
 
@@ -148,7 +171,7 @@ Incremental additions are the right approach. No new root node, no project migra
 
 ## Open Questions
 
-- **Run length:** Day 40 as win condition — revisit after new enemies and the mega asteroid are in place.
+- **Run length:** Day 30 as win condition (Mega Asteroid fight) — revisit after boss is built and playtested.
 - **Skip intro:** After the first run, should the intro be skippable from the start screen?
 - **Voice acting:** Real recordings or synthesized? Scoped as optional/later.
 - **Scoring:** Is there a score or is survival the only metric?
