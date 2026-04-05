@@ -1,58 +1,58 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://catatsq48mcn6"]
 
-[ext_resource type="Script" path="res://scripts/IntroScene.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/cutscenes/intro/background.png" id="2"]
-[ext_resource type="Texture2D" path="res://assets/cutscenes/intro/pilot1.png" id="3"]
-[ext_resource type="Texture2D" path="res://assets/cutscenes/intro/base1.png" id="4"]
-[ext_resource type="Texture2D" path="res://assets/cutscenes/intro/eye-of-shoggoth.png" id="5"]
+[ext_resource type="Script" uid="uid://dffrb8gci5da7" path="res://scripts/IntroScene.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://by7008chnq0eu" path="res://assets/cutscenes/intro/background.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c2h4ux3wq1atx" path="res://assets/cutscenes/intro/pilot1.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://dyng26sad7h8f" path="res://assets/cutscenes/intro/base1.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://bufmnbrbwivij" path="res://assets/cutscenes/intro/eye-of-shoggoth.png" id="5"]
 
-[node name="IntroScene" type="Node2D"]
+[node name="IntroScene" type="Node2D" unique_id=8338039]
 script = ExtResource("1")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=232053000]
 position = Vector2(640, 360)
 texture = ExtResource("2")
 
-[node name="EyeSprite" type="Sprite2D" parent="."]
+[node name="EyeSprite" type="Sprite2D" parent="." unique_id=822065750]
+modulate = Color(1, 1, 1, 0)
 position = Vector2(640, 360)
 texture = ExtResource("5")
-modulate = Color(1, 1, 1, 0)
 
-[node name="PilotSprite" type="Sprite2D" parent="."]
+[node name="PilotSprite" type="Sprite2D" parent="." unique_id=1242501762]
 position = Vector2(-640, 360)
 texture = ExtResource("3")
 
-[node name="BaseSprite" type="Sprite2D" parent="."]
+[node name="BaseSprite" type="Sprite2D" parent="." unique_id=1361762322]
+visible = false
 position = Vector2(1920, 360)
 texture = ExtResource("4")
-visible = false
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=239193057]
 
-[node name="DialoguePanel" type="Panel" parent="UI"]
+[node name="DialoguePanel" type="Panel" parent="UI" unique_id=389070790]
 visible = false
-offset_right = 1280.0
 offset_top = 575.0
+offset_right = 1280.0
 offset_bottom = 750.0
 
-[node name="SpeakerLabel" type="Label" parent="UI/DialoguePanel"]
+[node name="SpeakerLabel" type="Label" parent="UI/DialoguePanel" unique_id=1122328778]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 10.0
 offset_right = 400.0
 offset_bottom = 50.0
-text = ""
 theme_override_font_sizes/font_size = 28
 
-[node name="LineLabel" type="Label" parent="UI/DialoguePanel"]
+[node name="LineLabel" type="Label" parent="UI/DialoguePanel" unique_id=571164007]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 54.0
 offset_right = 1260.0
 offset_bottom = 168.0
-text = ""
-autowrap_mode = 3
 theme_override_font_sizes/font_size = 28
+autowrap_mode = 3
 
-[node name="FadeOverlay" type="ColorRect" parent="UI"]
+[node name="FadeOverlay" type="ColorRect" parent="UI" unique_id=806995912]
 offset_right = 1280.0
 offset_bottom = 720.0
 color = Color(0, 0, 0, 0)

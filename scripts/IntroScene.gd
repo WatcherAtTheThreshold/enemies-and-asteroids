@@ -16,6 +16,7 @@ const EYE_FADE_OUT: float = 1.2      # symbol fade out
 const DIALOGUE: Array = [
 	{"speaker": "Pilot",     "text": "Moonbase, come in!"},
 	{"speaker": "Moonbase",  "text": "We're in trouble! Please stop the meteor storm!"},
+	{"speaker": "Pilot",     "text": "Can do, hang in there Moonbase!"},
 ]
 
 func _ready() -> void:
@@ -62,7 +63,11 @@ func _run_sequence() -> void:
 	# Base line
 	_show_line(DIALOGUE[1])
 	await get_tree().create_timer(LINE_DURATION).timeout
-
+	
+	# Pilot line
+	_show_line(DIALOGUE[2])
+	await get_tree().create_timer(LINE_DURATION).timeout
+	
 	# Fade to black then start game
 	var tween = create_tween()
 	tween.tween_property($UI/FadeOverlay, "color", Color(0, 0, 0, 1), FADE_DURATION)
