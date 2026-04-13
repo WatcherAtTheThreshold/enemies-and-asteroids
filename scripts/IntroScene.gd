@@ -15,8 +15,10 @@ const EYE_FADE_OUT: float = 1.2      # symbol fade out
 
 const DIALOGUE: Array = [
 	{"speaker": "Pilot",     "text": "Moonbase, come in!"},
-	{"speaker": "Moonbase",  "text": "We're in trouble! Please stop the meteor storm!"},
+	{"speaker": "Moonbase",  "text": "We're in trouble! These meteors are gonna overwhelm us, please help!"},
 	{"speaker": "Pilot",     "text": "Can do, hang in there Moonbase!"},
+	{"speaker": "Moonbase",  "text": "Collect some resources and our engineers can craft some upgrades."},
+
 ]
 
 func _ready() -> void:
@@ -66,6 +68,10 @@ func _run_sequence() -> void:
 	
 	# Pilot line
 	_show_line(DIALOGUE[2])
+	await get_tree().create_timer(LINE_DURATION).timeout
+	
+	# Base line
+	_show_line(DIALOGUE[3])
 	await get_tree().create_timer(LINE_DURATION).timeout
 	
 	# Fade to black then start game
