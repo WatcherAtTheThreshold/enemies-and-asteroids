@@ -3,6 +3,7 @@ extends Node
 # --- Signals ---
 signal day_started(day_number: int)
 signal day_ended(day_number: int)
+@warning_ignore("UNUSED_SIGNAL")
 signal enemy_day_started(day_number: int)
 signal enemy_defeated()
 signal asteroid_destroyed(position: Vector2, size: String)
@@ -19,6 +20,20 @@ var resources: Dictionary = {
 	"weapon":   0,
 	"physical": 0,
 }
+
+var purchased_upgrades: Dictionary = {}
+
+func reset_run() -> void:
+	day_number = 1
+	is_day_active = false
+	resources = {"general": 0, "shield": 0, "weapon": 0, "physical": 0}
+	purchased_upgrades = {}
+
+func record_purchase(upgrade_name: String) -> void:
+	purchased_upgrades[upgrade_name] = purchased_upgrades.get(upgrade_name, 0) + 1
+
+func get_purchase_count(upgrade_name: String) -> int:
+	return purchased_upgrades.get(upgrade_name, 0)
 
 # --- Day Management ---
 

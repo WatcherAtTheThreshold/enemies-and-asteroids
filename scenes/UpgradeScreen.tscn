@@ -21,7 +21,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0, 0.0, 0.0, 0.75)
+color = Color(0.0, 0.0, 0.0, 0.82)
 
 [node name="Panel" type="VBoxContainer" parent="Screen"]
 layout_mode = 0
@@ -29,24 +29,80 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -180.0
-offset_right = 350.0
-offset_bottom = 180.0
-alignment = 1
+offset_left = -540.0
+offset_top = -300.0
+offset_right = 540.0
+offset_bottom = 300.0
+theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Screen/Panel"]
+[node name="Header" type="Label" parent="Screen/Panel"]
 layout_mode = 2
-text = "— Choose an Upgrade —"
+text = "ENGINEERING BAY"
 horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
 
-[node name="Cards" type="HBoxContainer" parent="Screen/Panel"]
+[node name="DayLabel" type="Label" parent="Screen/Panel"]
 layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 40
+text = "Day 1"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
 
-[node name="SkipButton" type="Button" parent="Screen/Panel"]
+[node name="Tracks" type="HBoxContainer" parent="Screen/Panel"]
 layout_mode = 2
-text = "Skip"
+size_flags_vertical = 3
+theme_override_constants/separation = 16
 
-[connection signal="pressed" from="Screen/Panel/SkipButton" to="." method="_on_skip_button_pressed"]
+[node name="WeaponsCol" type="VBoxContainer" parent="Screen/Panel/Tracks"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="WeaponsHeader" type="Label" parent="Screen/Panel/Tracks/WeaponsCol"]
+layout_mode = 2
+text = "WEAPONS"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+
+[node name="WeaponsNodes" type="VBoxContainer" parent="Screen/Panel/Tracks/WeaponsCol"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="EngineeringCol" type="VBoxContainer" parent="Screen/Panel/Tracks"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EngineeringHeader" type="Label" parent="Screen/Panel/Tracks/EngineeringCol"]
+layout_mode = 2
+text = "ENGINEERING"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+
+[node name="EngineeringNodes" type="VBoxContainer" parent="Screen/Panel/Tracks/EngineeringCol"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="HullCol" type="VBoxContainer" parent="Screen/Panel/Tracks"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="HullHeader" type="Label" parent="Screen/Panel/Tracks/HullCol"]
+layout_mode = 2
+text = "HULL & STRUCTURE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+
+[node name="HullNodes" type="VBoxContainer" parent="Screen/Panel/Tracks/HullCol"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="LaunchButton" type="Button" parent="Screen/Panel"]
+layout_mode = 2
+text = "LAUNCH"
+theme_override_font_sizes/font_size = 18
+
+[connection signal="pressed" from="Screen/Panel/LaunchButton" to="." method="_on_launch_button_pressed"]

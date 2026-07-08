@@ -11,7 +11,7 @@ func _ready() -> void:
 	$HealthComponent.died.connect(_on_died)
 	$HealthComponent.health_changed.connect(_on_health_changed)
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	velocity = Vector2(move_speed, 0.0)
 	move_and_slide()
 
@@ -26,7 +26,7 @@ func take_damage(amount: int) -> void:
 		return
 	$HealthComponent.take_damage(amount)
 
-func _on_health_changed(current_hp: int, max_hp_val: int) -> void:
+func _on_health_changed(_current_hp: int, _max_hp_val: int) -> void:
 	_flash_damage()
 
 func _flash_damage() -> void:

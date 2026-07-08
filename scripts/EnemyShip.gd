@@ -125,7 +125,7 @@ func _strafe(delta: float) -> void:
 func take_damage(amount: int) -> void:
 	$HealthComponent.take_damage(amount)
 
-func _on_health_changed(current_hp: int, max_hp_val: int) -> void:
+func _on_health_changed(current_hp: int, _max_hp_val: int) -> void:
 	$HPBar.value = current_hp
 
 func _on_health_component_died() -> void:

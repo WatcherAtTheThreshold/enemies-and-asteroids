@@ -17,6 +17,8 @@ var _day_running: bool = false
 var _waiting_for_enemy: bool = false
 
 func _ready() -> void:
+	GameManager.reset_run()
+
 	# Pass player/base references to the enemy spawner
 	if enemy_spawner:
 		enemy_spawner.player = player
